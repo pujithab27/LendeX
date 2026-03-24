@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Dashboard | LendeX</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body style="background: #f8fafc;">
+    <nav>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+            <a href="index.html" class="logo">LendeX</a>
+            <div id="nav-links" class="nav-links">
+                <a href="index.html">Explore</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem;">Merchant
+                    Dashboard</h1>
+                <p style="color: var(--text-muted);">Manage your listings, track earnings, and handle rentals.</p>
+            </div>
+            <a href="add-product.html" class="btn btn-primary"><i class="fas fa-plus"></i> List New Item</a>
+        </header>
+
+        <div style="display: flex; gap: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border);">
+            <button id="tab-products" class="tab-btn active-tab"
+                style="padding: 1rem 0; background: none; border: none; font-weight: 700; color: var(--primary); border-bottom: 3px solid var(--primary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-box"></i> My Listings
+            </button>
+            <button id="tab-bookings" class="tab-btn"
+                style="padding: 1rem 0; background: none; border: none; font-weight: 600; color: var(--text-muted); border-bottom: 3px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-calendar-check"></i> Actve Rentals
+            </button>
+        </div>
+
+        <div id="loader" class="text-center" style="padding: 4rem;">
+            <p>Syncing your dashboard...</p>
+        </div>
+
+        <!-- Products View -->
+        <div id="view-products" class="grid-view">
+            <div id="products-list" class="product-grid">
+                <!-- Loaded by JS -->
+            </div>
+        </div>
+
+        <!-- Bookings View -->
+        <div id="view-bookings" class="hidden">
+            <div id="bookings-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Loaded by JS -->
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        const tabP = document.getElementById('tab-products');
+        const tabB = document.getElementById('tab-bookings');
+        const viewP = document.getElementById('view-products');
+        const viewB = document.getElementById('view-bookings');
+        const listP = document.getElementById('products-list');
+        const listB = document.getElementById('bookings-list');
+        const loader = document.getElementById('loader');
+
+        const switchTab = (tab) => {
+            if (tab === 'products') {
+                tabP.style.color = 'var(--primary)';
+                tabP.style.borderBottomColor = 'var(--primary)';
+                tabP.style.fontWeight = '700';
+                tabB.style.color = 'var(--text-muted)';
+                tabB.style.borderBottomColor = 'transparent';
+                tabB.style.fontWeight = '600';
+                viewP.classList.remove('hidden');
+                viewB.classList.add('hidden');
+            } else {
+                tabB.style.color = 'var(--primary)';
+                tabB.style.borderBottomColor = 'var(--primary)';
+                tabB.style.fontWeight = '700';
+                tabP.style.color = 'var(--text-muted)';
+                tabP.style.borderBottomColor = 'transparent';
+                tabP.style.fontWeight = '600';
+                viewB.classList.remove('hidden');
+                viewP.classList.add('hidden');
+            }
+        };
+
+        tabP.onclick = () => switchTab('products');
+        tabB.onclick = () => switchTab('bookings');
+
+        window.updateStatus = async (id, status) => {
+            try {
+                await fetch(`${window.API_URL}/bookings/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${window.authToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                alert("Status updated to " + status);
+                fetchData();
+            } catch (err) { alert("Status update failed."); }
+        };
+
+        const fetchData = async () => {
+            try {
+                loader.classList.remove('hidden');
+
+                // Fetch Products
+                const pRes = await fetch(`${window.API_URL}/products`);
+                const { data: allProds } = await pRes.json();
+                const myProds = allProds.filter(p => (p.merchant._id || p.merchant) === window.dbUser._id);
+
+                if (myProds.length === 0) {
+                    listP.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: var(--radius-lg); border: 1px dashed var(--border);">No active listings. Click "List New Item" to start!</div>';
+                } else {
+                    listP.innerHTML = myProds.map(p => `
+                        <div class="card">
+                            <img src="${p.images[0]}" class="card-img" style="height: 180px;">
+                            <div class="card-body">
+                                <h3 class="card-title">${p.title}</h3>
+                                <p style="font-weight: 700; color: var(--primary);">₹${p.pricePerDay}<span style="font-weight: 400; color: var(--text-muted);"> / day</span></p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Fetch Bookings
+                const bRes = await fetch(`${window.API_URL}/bookings/merchant`, {
+                    headers: { 'Authorization': `Bearer ${window.authToken}` }
+                });
+                const { data: myBooks } = await bRes.json();
+
+                if (myBooks.length === 0) {
+                    listB.innerHTML = '<div style="text-align: center; padding: 4rem; background: white; border-radius: var(--radius-lg); border: 1px dashed var(--border);">No active rental requests yet.</div>';
+                } else {
+                    listB.innerHTML = myBooks.map(b => {
+                        let actions = "";
+                        let btnColor = "var(--primary)";
+                        let btnLabel = "";
+                        let nextStatus = "";
+
+                        if (b.status === 'ACCEPTED') { btnLabel = "Out for Delivery"; nextStatus = "OUT_FOR_DELIVERY"; }
+                        else if (b.status === 'OUT_FOR_DELIVERY') { btnLabel = "Mark Delivered"; nextStatus = "DELIVERED"; btnColor = "#10b981"; }
+                        else if (b.status === 'IN_USE') { btnLabel = "Request Return"; nextStatus = "RETURN_REQUESTED"; btnColor = "#f59e0b"; }
+                        else if (b.status === 'RETURN_REQUESTED') { btnLabel = "Complete Rental"; nextStatus = "COMPLETED"; btnColor = "#8b5cf6"; }
+
+                        if (btnLabel) actions = `<button onclick="window.updateStatus('${b._id}','${nextStatus}')" class="btn btn-primary" style="background: ${btnColor}; padding: 0.5rem 1rem; font-size: 0.875rem;">${btnLabel}</button>`;
+
+                        return `
+                            <div style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+                                <div style="display: flex; gap: 1.5rem; align-items: center;">
+                                    <div style="width: 50px; height: 50px; background: #e0e7ff; color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                                        #${b._id.slice(-4).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <h4 style="font-weight: 700;">${b.product?.title || 'Unknown Item'}</h4>
+                                        <p style="font-size: 0.875rem; color: var(--text-muted);">Renter: <span style="font-weight: 600; color: var(--text-main);">${b.renter?.name || 'Peer'}</span></p>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span class="badge badge-blue" style="margin-bottom: 0.75rem;">${b.status}</span><br>
+                                    ${actions}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (err) { console.error(err); }
+            finally { loader.classList.add('hidden'); }
+        };
+
+        window.addEventListener("authStateReady", () => {
+            if (!window.dbUser || window.dbUser.role !== 'merchant') {
+                window.location.href = "index.html";
+            } else {
+                fetchData();
+            }
+        });
+    </script>
+</body>
+
+</html>

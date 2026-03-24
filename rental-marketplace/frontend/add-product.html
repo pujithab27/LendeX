@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List New Item | LendeX</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body style="background: #f8fafc;">
+    <nav>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+            <a href="index.html" class="logo">LendeX</a>
+            <div id="nav-links" class="nav-links">
+                <a href="index.html">Explore</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 800px;">
+        <div
+            style="background: white; padding: 3rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-lg);">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem;">List
+                    Your Gear</h1>
+                <p style="color: var(--text-muted);">Fill in the details below to start earning from your idle
+                    equipment.</p>
+            </div>
+
+            <div id="error-box" class="error-msg hidden"></div>
+            <div id="success-box" class="hidden"
+                style="background: #dcfce7; color: #166534; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #bbf7d0;">
+                <i class="fas fa-check-circle"></i> Item listed successfully! Redirecting...
+            </div>
+
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label>Product Title</label>
+                    <input type="text" id="title" class="form-input"
+                        placeholder="e.g. Sony Alpha a7 III Mirrorless Camera" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="category" class="form-input" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Tools">Tools</option>
+                            <option value="Outdoors">Outdoors</option>
+                            <option value="Gaming">Gaming</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="condition" class="form-input" required>
+                            <option value="">Select Condition</option>
+                            <option value="New">Brand New</option>
+                            <option value="Mint">Mint / Like New</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good">Good / Working</option>
+                            <option value="Used">Well Used</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description (Detailed)</label>
+                    <textarea id="description" class="form-input" rows="5"
+                        placeholder="Include what's in the box, any quirks, and usage tips..." required></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>Price Per Day (₹)</label>
+                        <input type="number" id="price" class="form-input" placeholder="500" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Security Deposit (Refundable) (₹)</label>
+                        <input type="number" id="deposit" class="form-input" placeholder="5000" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Photos (Direct Image URL)</label>
+                    <input type="url" id="image-url" class="form-input" placeholder="https://images.unsplash.com/..."
+                        required>
+                    <p
+                        style="font-size: 0.75rem; color: var(--text-muted); margin-top: -0.5rem; margin-bottom: 1.5rem;">
+                        For development, please provide a high-quality Unsplash image link.</p>
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; padding: 1rem; font-size: 1rem;">
+                    <i class="fas fa-rocket"></i> Publish Listing
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        const form = document.getElementById('add-product-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorBox = document.getElementById('error-box');
+        const successBox = document.getElementById('success-box');
+
+        window.addEventListener("authStateReady", () => {
+            if (!window.dbUser || window.dbUser.role !== 'merchant') {
+                window.location.href = "login.html";
+            }
+        });
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            errorBox.classList.add('hidden');
+            submitBtn.innerText = "Publishing Gear...";
+            submitBtn.disabled = true;
+
+            const productData = {
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                condition: document.getElementById('condition').value,
+                description: document.getElementById('description').value,
+                pricePerDay: Number(document.getElementById('price').value),
+                securityDeposit: Number(document.getElementById('deposit').value),
+                images: [document.getElementById('image-url').value]
+            };
+
+            try {
+                const res = await fetch(`${window.API_URL}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${window.authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                });
+                const { success, error } = await res.json();
+
+                if (!success) throw new Error(error);
+
+                successBox.classList.remove('hidden');
+                setTimeout(() => window.location.href = 'dashboard.html', 2000);
+
+            } catch (err) {
+                errorBox.innerText = err.message || "Failed to list item.";
+                errorBox.classList.remove('hidden');
+                submitBtn.innerText = "Publish Listing";
+                submitBtn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>

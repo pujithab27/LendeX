@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | LendeX Marketplace</title>
+    <meta name="description" content="Sign in or create a LendeX account to access premium peer-to-peer rentals.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #7c3aed;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-input: #f8fafc;
+            --error: #ef4444;
+            --success: #10b981;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: #020617;
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── LEFT PANEL ── */
+        .left-panel {
+            flex: 1;
+            display: none;
+            background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 4rem;
+        }
+
+        @media (min-width: 900px) {
+            .left-panel {
+                display: flex;
+            }
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+            bottom: -80px;
+            right: -80px;
+        }
+
+        .panel-brand {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .panel-brand span {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .panel-tagline {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 340px;
+            line-height: 1.75;
+            text-align: center;
+            position: relative;
+        }
+
+        .panel-stats {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 3.5rem;
+            position: relative;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-top: 0.2rem;
+        }
+
+        .panel-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 360px;
+            position: relative;
+        }
+
+        .mini-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .mini-card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .mini-card-text {
+            flex: 1;
+        }
+
+        .mini-card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .mini-card-sub {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 0.15rem;
+        }
+
+        .mini-card-price {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #60a5fa;
+            white-space: nowrap;
+        }
+
+        /* ── RIGHT PANEL (Form) ── */
+        .right-panel {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 3.5rem;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 899px) {
+            .right-panel {
+                max-width: 100%;
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 2.5rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .form-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.04em;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-logo span {
+            color: var(--primary);
+        }
+
+        .form-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.03em;
+        }
+
+        .form-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.4rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Tabs */
+        .tab-row {
+            display: flex;
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: var(--text-main);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--error);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            display: none;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: var(--success);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.45rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-main);
+            background: var(--bg-input);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            background: #fff;
+        }
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap .form-input {
+            padding-right: 3rem;
+        }
+
+        .toggle-eye {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: opacity 0.2s, transform 0.2s;
+            letter-spacing: 0.01em;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.4rem 0;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .google-btn:hover {
+            background: var(--bg-input);
+            border-color: #c7d2fe;
+        }
+
+        .terms-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .terms-note a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Left Panel ── -->
+    <div class="left-panel">
+        <div class="panel-brand">Lende<span>X</span></div>
+        <p class="panel-tagline">The world's premier peer-to-peer marketplace for premium gear rentals.</p>
+
+        <div class="panel-stats">
+            <div class="stat">
+                <div class="stat-num">39+</div>
+                <div class="stat-label">Listings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">6</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">4.8★</div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
+        </div>
+
+        <div class="panel-cards">
+            <div class="mini-card">
+                <div class="mini-card-icon" style="background: rgba(37,99,235,0.15); color: #60a5fa;">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <div class="mini-card-text">
+                    <div class="mini-card-title">RED Komodo 6K Cinema</div>
+                    <div class="mini-card-sub">Electronics · Verified</div>
+                </div>
+                <div class="mini-card-price">₹15,000/d</div>
+            </div>
+            <div class="mini-card">
+                <div class="mini-card-icon" style="background: rgba(124,58,237,0.15); color: #a78bfa;">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="mini-card-text">
+                    <div class="mini-card-title">Porsche 911 Carrera S</div>
+                    <div class="mini-card-sub">Automotive · Premium</div>
+                </div>
+                <div class="mini-card-price">₹45,000/d</div>
+            </div>
+            <div class="mini-card">
+                <div class="mini-card-icon" style="background: rgba(16,185,129,0.15); color: #34d399;">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div class="mini-card-text">
+                    <div class="mini-card-title">RTX 4090 Gaming PC</div>
+                    <div class="mini-card-sub">Gaming · New</div>
+                </div>
+                <div class="mini-card-price">₹5,000/d</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Right Panel (Form) ── -->
+    <div class="right-panel">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Marketplace
+        </a>
+
+        <div class="form-logo">Lende<span>X</span></div>
+        <div class="form-title" id="form-title">Welcome back</div>
+        <p class="form-subtitle" id="form-subtitle">Sign in to access your account and bookings.</p>
+
+        <!-- Tab switcher -->
+        <div class="tab-row">
+            <button class="tab-btn active" id="tab-login" onclick="switchMode(true)">Sign In</button>
+            <button class="tab-btn" id="tab-signup" onclick="switchMode(false)">Create Account</button>
+        </div>
+
+        <div class="error-box" id="error-box"></div>
+        <div class="success-box" id="success-box"></div>
+
+        <form id="auth-form" novalidate>
+            <div class="form-group" id="name-group" style="display:none;">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="name" class="form-input" placeholder="John Smith">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="name@company.com" required
+                    autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="password-wrap">
+                    <input type="password" id="password" class="form-input" placeholder="Min 6 characters" required
+                        autocomplete="current-password">
+                    <button type="button" class="toggle-eye" onclick="togglePass()"><i class="fas fa-eye"
+                            id="eye-icon"></i></button>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="submit-btn">
+                <span id="btn-text">Sign In</span>
+            </button>
+        </form>
+
+        <div class="divider">OR CONTINUE WITH</div>
+
+        <button class="google-btn" id="google-btn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20" alt="Google">
+            Continue with Google
+        </button>
+
+        <p class="terms-note">
+            By continuing, you agree to LendeX's
+            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </p>
+    </div>
+
+    <script type="module">
+        import {
+            auth,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            googleLogin
+        } from './js/auth.js';
+
+        let isLoginMode = true;
+
+        // ── If already signed in → redirect immediately (before form shown)
+        // We check once on load using onAuthStateChanged, then unsubscribe.
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        const _auth = getAuth();
+        const unsub = onAuthStateChanged(_auth, (user) => {
+            if (user) {
+                unsub(); // stop listening
+                window.location.href = 'index.html';
+            } else {
+                unsub();
+            }
+        });
+
+        window.switchMode = (login) => {
+            isLoginMode = login;
+            document.getElementById('tab-login').classList.toggle('active', login);
+            document.getElementById('tab-signup').classList.toggle('active', !login);
+            document.getElementById('form-title').textContent = login ? 'Welcome back' : 'Create your account';
+            document.getElementById('form-subtitle').textContent = login
+                ? 'Sign in to access your account and bookings.'
+                : 'Join thousands renting premium gear today.';
+            document.getElementById('btn-text').textContent = login ? 'Sign In' : 'Create Account';
+            document.getElementById('name-group').style.display = login ? 'none' : 'block';
+            clearMessages();
+        };
+
+        window.togglePass = () => {
+            const inp = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            const show = inp.type === 'password';
+            inp.type = show ? 'text' : 'password';
+            icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+        };
+
+        const showError = (msg) => {
+            const b = document.getElementById('error-box');
+            b.textContent = msg;
+            b.style.display = 'block';
+            document.getElementById('success-box').style.display = 'none';
+        };
+        const showSuccess = (msg) => {
+            const b = document.getElementById('success-box');
+            b.textContent = msg;
+            b.style.display = 'block';
+            document.getElementById('error-box').style.display = 'none';
+        };
+        const clearMessages = () => {
+            document.getElementById('error-box').style.display = 'none';
+            document.getElementById('success-box').style.display = 'none';
+        };
+        const setLoading = (loading, label) => {
+            const btn = document.getElementById('submit-btn');
+            document.getElementById('btn-text').textContent = loading ? 'Please wait...' : label;
+            btn.disabled = loading;
+        };
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+
+            if (!email || !pass) { showError('Please fill in all fields.'); return; }
+            if (pass.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+            const label = isLoginMode ? 'Sign In' : 'Create Account';
+            setLoading(true, label);
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                    showSuccess('Signed in! Redirecting...');
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, pass);
+                    showSuccess('Account created! Redirecting...');
+                }
+                setTimeout(() => { window.location.href = 'index.html'; }, 800);
+            } catch (err) {
+                const msgs = {
+                    'auth/user-not-found': 'No account found with that email.',
+                    'auth/wrong-password': 'Incorrect password. Please try again.',
+                    'auth/email-already-in-use': 'An account with this email already exists.',
+                    'auth/invalid-email': 'Please enter a valid email address.',
+                    'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+                    'auth/invalid-credential': 'Invalid email or password. Please check and retry.',
+                };
+                showError(msgs[err.code] || err.message);
+                setLoading(false, label);
+            }
+        });
+
+        document.getElementById('google-btn').addEventListener('click', async () => {
+            clearMessages();
+            try {
+                await googleLogin();
+                showSuccess('Google sign-in successful! Redirecting...');
+                setTimeout(() => { window.location.href = 'index.html'; }, 800);
+            } catch (err) {
+                showError('Google sign-in failed: ' + err.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

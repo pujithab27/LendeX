@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LendeX | Premium Peer-to-Peer Rentals</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <nav>
+    <div class="container"
+      style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <a href="index.html" class="logo">Lende<span>X</span></a>
+        <div class="hamburger-all" id="mega-menu-btn">
+          <i class="fas fa-bars"></i>
+          <span>All Gear</span>
+        </div>
+      </div>
+      <div id="nav-links" class="nav-links">
+        <!-- Injected by auth.js -->
+        <a href="index.html">Explore</a>
+        <a href="login.html" class="btn btn-primary" style="color: white;">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="category-nav">
+    <div class="container">
+      <a href="#" class="cat-link" data-cat="" id="cat-all"><i class="fas fa-th"></i> All</a>
+      <a href="#" class="cat-link" data-cat="Electronics"><i class="fas fa-bolt"></i> Electronics</a>
+      <a href="#" class="cat-link" data-cat="Tools"><i class="fas fa-tools"></i> Pro Tools</a>
+      <a href="#" class="cat-link" data-cat="Outdoors"><i class="fas fa-mountain"></i> Outdoor</a>
+      <a href="#" class="cat-link" data-cat="Gaming"><i class="fas fa-gamepad"></i> Gaming</a>
+      <a href="#" class="cat-link" data-cat="Automotive"><i class="fas fa-car"></i> Automotive</a>
+      <a href="#" class="cat-link" data-cat="Home" style="margin-left: auto;"><i class="fas fa-home"></i> Home</a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="container">
+      <h1 class="hero-title">LendeX Marketplace</h1>
+      <p class="hero-subtitle">The world's premier destination for high-end gear. Rent professional equipment from
+        verified owners with full insurance.</p>
+
+      <div class="search-container">
+        <select id="search-category">
+          <option value="">All Departments</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Tools">Tools</option>
+          <option value="Outdoors">Outdoors</option>
+          <option value="Gaming">Gaming</option>
+          <option value="Automotive">Automotive</option>
+        </select>
+        <input type="text" id="search-input" placeholder="Search for RED cameras, Tesla, DJI drones...">
+        <button id="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <section class="featured-cats container" style="margin-bottom: 4rem;">
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem;">
+      <div class="cat-tile" data-cat="Electronics" onclick="filterByCategory('Electronics')">
+        <i class="fas fa-bolt"></i>
+        <span>Electronics</span>
+      </div>
+      <div class="cat-tile" data-cat="Tools" onclick="filterByCategory('Tools')">
+        <i class="fas fa-tools"></i>
+        <span>Pro Tools</span>
+      </div>
+      <div class="cat-tile" data-cat="Outdoors" onclick="filterByCategory('Outdoors')">
+        <i class="fas fa-mountain"></i>
+        <span>Outdoor</span>
+      </div>
+      <div class="cat-tile" data-cat="Home" onclick="filterByCategory('Home')">
+        <i class="fas fa-home"></i>
+        <span>Home & Life</span>
+      </div>
+      <div class="cat-tile" data-cat="Gaming" onclick="filterByCategory('Gaming')">
+        <i class="fas fa-gamepad"></i>
+        <span>Gaming</span>
+      </div>
+      <div class="cat-tile" data-cat="Automotive" onclick="filterByCategory('Automotive')">
+        <i class="fas fa-car"></i>
+        <span>Automotive</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="main-wrapper">
+      <!-- Sidebar Filters -->
+      <aside class="sidebar">
+        <div class="filter-group">
+          <div class="filter-title">Categories</div>
+          <div id="category-filters">
+            <label class="filter-option"><input type="checkbox" value="Electronics"> Electronics</label>
+            <label class="filter-option"><input type="checkbox" value="Tools"> Tools</label>
+            <label class="filter-option"><input type="checkbox" value="Outdoors"> Outdoors</label>
+            <label class="filter-option"><input type="checkbox" value="Gaming"> Gaming</label>
+            <label class="filter-option"><input type="checkbox" value="Automotive"> Automotive</label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Price Range</div>
+          <label class="filter-option"><input type="radio" name="price" value="0-100000"> Under ₹1,00,000</label>
+          <label class="filter-option"><input type="radio" name="price" value="100000-500000"> ₹1,00,000 -
+            ₹5,00,000</label>
+          <label class="filter-option"><input type="radio" name="price" value="500000-plus"> Above ₹5,00,000</label>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Condition</div>
+          <label class="filter-option"><input type="checkbox" name="condition" value="New"> Brand New</label>
+          <label class="filter-option"><input type="checkbox" name="condition" value="Excellent"> Excellent</label>
+          <label class="filter-option"><input type="checkbox" name="condition" value="Good"> Good Condition</label>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="content" style="padding-top: 0.5rem;">
+        <div class="sort-header">
+          <p id="results-count" style="font-weight: 600; color: var(--text-main);">Loading catalog...</p>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Sort by:</span>
+            <select class="sort-select" id="sort-select"
+              style="background: var(--bg-card); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; color: var(--text-main); cursor: pointer;">
+              <option value="newest">Newest Arrivals</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="products-grid" class="product-grid"
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+          <!-- Cards populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="logo" style="margin-bottom: 1.5rem; font-size: 1.75rem;">Lende<span>X</span></a>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; max-width: 280px;">The world's
+            premier destination for luxury gear rentals. Elevating creators and adventurers globally.</p>
+        </div>
+        <div>
+          <h4
+            style="margin-bottom: 1.5rem; color: var(--bg-dark); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em;">
+            Discover</h4>
+          <a href="#" class="footer-link">Electronics</a>
+          <a href="#" class="footer-link">Adventure Gear</a>
+          <a href="#" class="footer-link">Elite Tools</a>
+          <a href="#" class="footer-link">Luxury Mobility</a>
+        </div>
+        <div>
+          <h4
+            style="margin-bottom: 1.5rem; color: var(--bg-dark); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em;">
+            Support</h4>
+          <a href="#" class="footer-link">Help Center</a>
+          <a href="#" class="footer-link">LendeX Protection</a>
+          <a href="#" class="footer-link">Trust & Safety</a>
+          <a href="#" class="footer-link">Rental Policy</a>
+        </div>
+      </div>
+      <div
+        style="border-top: 1px solid var(--border); padding-top: 3rem; margin-top: 4rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">
+        <p>© 2026 LendeX Technologies Ltd. All rights reserved.</p>
+        <div style="display: flex; gap: 2rem;">
+          <a href="#" style="color: inherit; text-decoration: none;">Privacy</a>
+          <a href="#" style="color: inherit; text-decoration: none;">Terms</a>
+          <a href="#" style="color: inherit; text-decoration: none;">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    const grid = document.getElementById('products-grid');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    let activeCategory = '';
+
+    // ── Render cards ──
+    const renderCard = (p) => `
+      <div class="card" onclick="window.location.href='product.html?id=${p._id}'" style="cursor:pointer;">
+        ${p.verified ? `<div class="verified-badge" title="LendeX Verified"><i class="fas fa-check-circle"></i></div>` : ''}
+        <div class="card-img-wrap">
+          <img
+            src="${p.images && p.images[0] ? p.images[0] : 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&q=70'}"
+            class="card-img"
+            alt="${p.title}"
+            onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&q=70'"
+          >
+          <div style="position:absolute;bottom:0.8rem;left:0.8rem;display:flex;gap:0.4rem;">
+            <span style="background:rgba(0,0,0,0.65);color:#fff;padding:0.2rem 0.6rem;border-radius:4px;font-size:0.68rem;font-weight:800;backdrop-filter:blur(6px);">${p.condition || 'Good'}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">${p.category}</span>
+          <h3 class="card-title">${p.title}</h3>
+          <div style="color:#f59e0b;font-size:0.75rem;display:flex;align-items:center;gap:0.2rem;margin-bottom:0.5rem;">
+            ${Array(5).fill(0).map((_, i) => `<i class="${i < Math.floor(p.rating || 4) ? 'fas' : 'far'} fa-star"></i>`).join('')}
+            <span style="color:var(--text-muted);font-weight:700;margin-left:0.35rem;">${(p.rating || 4.0).toString()}</span>
+            <span style="color:var(--text-muted);font-size:0.7rem;margin-left:0.2rem;">(${p.reviewCount || 0})</span>
+          </div>
+          <div class="card-footer">
+            <p class="card-price">₹${(p.pricePerDay || 0).toLocaleString('en-IN')}<span>/day</span></p>
+            <button class="btn btn-outline" style="padding:0.45rem 0.9rem;font-size:0.78rem;border-radius:8px;">Rent Now</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // ── Fetch & display ──
+    const fetchProducts = async (params = '') => {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:5rem;color:var(--text-muted);font-weight:600;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;margin-bottom:1rem;display:block;"></i>Loading premium catalog...</div>';
+      try {
+        const res = await fetch(`/api/products${params}`);
+        const json = await res.json();
+        const data = json.data || [];
+
+        // Client-side sort
+        const sort = document.getElementById('sort-select').value;
+        if (sort === 'price-low') data.sort((a, b) => a.pricePerDay - b.pricePerDay);
+        else if (sort === 'price-high') data.sort((a, b) => b.pricePerDay - a.pricePerDay);
+        else if (sort === 'rating') data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+
+        document.getElementById('results-count').innerText =
+          activeCategory
+            ? `${data.length} items in "${activeCategory}"`
+            : `${data.length} premium listings available`;
+
+        if (data.length === 0) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:5rem;color:var(--text-muted);"><i class="fas fa-search" style="font-size:2.5rem;opacity:0.25;display:block;margin-bottom:1rem;"></i>No matching gear found. Try a different filter.</div>';
+          return;
+        }
+        grid.innerHTML = data.map(renderCard).join('');
+      } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ef4444;padding:4rem;"><i class="fas fa-exclamation-triangle"></i> Failed to load catalog. Make sure the server is running.</div>';
+      }
+    };
+
+    // ── Build query from all active filters ──
+    const buildQuery = () => {
+      const search = searchInput.value.trim();
+      const checkedCats = Array.from(document.querySelectorAll('#category-filters input:checked')).map(i => i.value);
+      // activeCategory takes priority over sidebar checkboxes
+      const cat = activeCategory || (checkedCats.length ? checkedCats[0] : '');
+      let q = '?';
+      if (search) q += `search=${encodeURIComponent(search)}&`;
+      if (cat) q += `category=${encodeURIComponent(cat)}&`;
+      return q.replace(/[&?]$/, '') || '';
+    };
+
+    const refresh = () => fetchProducts(buildQuery());
+
+    // ── Category filter function (called by tiles & nav links) ──
+    window.filterByCategory = (cat) => {
+      activeCategory = cat;
+      // Highlight active tile
+      document.querySelectorAll('.cat-tile').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+      // Highlight active nav link
+      document.querySelectorAll('.cat-link').forEach(l => l.classList.toggle('active', l.dataset.cat === cat));
+      // Sync sidebar checkbox
+      document.querySelectorAll('#category-filters input').forEach(cb => { cb.checked = cb.value === cat; });
+      refresh();
+      // Smooth scroll to grid
+      document.getElementById('products-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    // ── Category nav links ──
+    document.querySelectorAll('.cat-link[data-cat]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        filterByCategory(link.dataset.cat);
+      });
+    });
+
+    // ── Sidebar checkbox override ──
+    document.querySelectorAll('#category-filters input').forEach(cb => {
+      cb.addEventListener('change', () => {
+        activeCategory = '';
+        document.querySelectorAll('.cat-tile').forEach(t => t.classList.remove('active'));
+        refresh();
+      });
+    });
+
+    // ── Search ──
+    searchBtn.onclick = () => { activeCategory = ''; refresh(); };
+    searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { activeCategory = ''; refresh(); } });
+
+    // ── Search category select ──
+    document.getElementById('search-category').addEventListener('change', (e) => {
+      activeCategory = e.target.value;
+      refresh();
+    });
+
+    // ── Sort ──
+    document.getElementById('sort-select').addEventListener('change', refresh);
+
+    // ── Read URL param on load ──
+    const initCategory = new URLSearchParams(window.location.search).get('category') || '';
+    if (initCategory) {
+      filterByCategory(initCategory);
+    } else {
+      fetchProducts();
+    }
+  </script>
+</body>
+
+</html>

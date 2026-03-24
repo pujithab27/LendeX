@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Admin | LendeX</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body style="background: #f8fafc;">
+    <nav>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+            <a href="index.html" class="logo">LendeX</a>
+            <div id="nav-links" class="nav-links">
+                <a href="index.html">Explore</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem;">Platform
+                Administration</h1>
+            <p style="color: var(--text-muted);">Monitor marketplace activity, approve merchants, and manage users.</p>
+        </header>
+
+        <div id="loader" class="text-center" style="padding: 4rem;">
+            <p>Verifying admin permissions...</p>
+        </div>
+
+        <div id="admin-panel" class="hidden">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+                <div
+                    style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <p
+                        style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; text-transform: uppercase;">
+                        Total Users</p>
+                    <h2 style="font-size: 1.75rem; font-weight: 800; margin-top: 0.5rem;">142</h2>
+                </div>
+                <div
+                    style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <p
+                        style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; text-transform: uppercase;">
+                        Pending Approvals</p>
+                    <h2 style="font-size: 1.75rem; font-weight: 800; margin-top: 0.5rem; color: var(--primary);">0</h2>
+                </div>
+                <div
+                    style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <p
+                        style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; text-transform: uppercase;">
+                        Revenue (MTD)</p>
+                    <h2 style="font-size: 1.75rem; font-weight: 800; margin-top: 0.5rem;">₹45,200</h2>
+                </div>
+            </div>
+
+            <div
+                style="background: white; padding: 4rem; border-radius: var(--radius-lg); border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow);">
+                <div
+                    style="width: 80px; height: 80px; background: #eff6ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="fas fa-shield-check" style="font-size: 2rem;"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Admin Controls Synchronized</h2>
+                <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto;">Currently in monitoring mode.
+                    Verification workflows and moderation tools are active and will appear here when items require your
+                    attention.</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        window.addEventListener("authStateReady", async () => {
+            if (!window.dbUser || window.dbUser.role !== 'admin') {
+                window.location.href = "index.html";
+                return;
+            }
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+        });
+    </script>
+</body>
+
+</html>

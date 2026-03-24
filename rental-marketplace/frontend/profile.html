@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | LendeX</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body style="background: #f8fafc;">
+    <nav>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+            <a href="index.html" class="logo">LendeX</a>
+            <div id="nav-links" class="nav-links">
+                <a href="index.html">Explore</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="loader" class="text-center" style="padding: 4rem;">
+            <p>Loading your profile...</p>
+        </div>
+
+        <div id="profile-card" class="hidden"
+            style="background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem;">
+            <div id="p-avatar"
+                style="width: 100px; height: 100px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; border: 4px solid #e0e7ff;">
+                ?
+            </div>
+            <div>
+                <h1 id="p-name"
+                    style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.25rem;">
+                </h1>
+                <p id="p-email" style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;"></p>
+                <span id="p-role" class="badge badge-blue"></span>
+            </div>
+        </div>
+
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">My Rental History</h2>
+        <div id="rentals-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Loaded by JS -->
+        </div>
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        window.addEventListener("authStateReady", async () => {
+            if (!window.dbUser) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Fill profile
+            document.getElementById('p-name').innerText = window.dbUser.name || 'Value Client';
+            document.getElementById('p-email').innerText = window.dbUser.email;
+            document.getElementById('p-role').innerText = window.dbUser.role.toUpperCase();
+            document.getElementById('p-avatar').innerText = (window.dbUser.name || 'V')[0];
+            document.getElementById('profile-card').classList.remove('hidden');
+
+            try {
+                const res = await fetch(`${window.API_URL}/bookings/my-rentals`, {
+                    headers: { 'Authorization': `Bearer ${window.authToken}` }
+                });
+                const { data } = await res.json();
+                const list = document.getElementById('rentals-list');
+
+                if (data.length === 0) {
+                    list.innerHTML = '<div style="background: white; padding: 3rem; border-radius: var(--radius-lg); border: 1px dashed var(--border); text-align: center;"><p style="color: var(--text-muted);">You haven\'t rented anything yet. Start exploring!</p><a href="index.html" class="btn btn-primary" style="margin-top: 1rem;">Browse Gear</a></div>';
+                } else {
+                    list.innerHTML = data.map(r => `
+                        <div style="background: white; padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; gap: 2rem; box-shadow: var(--shadow-sm);">
+                            <img src="${r.product?.images?.[0]}" style="width: 140px; height: 140px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                            <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                        <h3 style="font-size: 1.25rem; font-weight: 700;">${r.product?.title || 'Gear Item'}</h3>
+                                        <span class="badge ${r.status === 'COMPLETED' ? 'badge-available' : 'badge-blue'}" style="padding: 0.5rem 1rem;">${r.status}</span>
+                                    </div>
+                                    <p style="color: var(--text-muted); font-size: 0.9375rem;"><i class="fas fa-calendar-alt"></i> ${new Date(r.startDate).toLocaleDateString()} — ${new Date(r.endDate).toLocaleDateString()}</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                                    <p style="font-size: 0.875rem; color: var(--text-muted);">Rental ID: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">#${r._id.slice(-6)}</code></p>
+                                    <p style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Total Paid: ₹${r.totalAmount + r.securityDeposit}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                document.getElementById('loader').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

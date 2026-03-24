@@ -1,0 +1,167 @@
+# LendeX — Peer-to-Peer Rental Marketplace
+## Initial Project Draft
+
+---
+
+## 1. Project Idea
+
+**LendeX** is a full-stack, peer-to-peer rental marketplace that connects people who own high-value assets (cameras, vehicles, gaming gear, professional tools, outdoor equipment) with people who need them temporarily. Unlike traditional e-commerce where items are sold, LendeX is built entirely around **short-term rentals with verified security deposits**, enabling owners to monetize idle assets while renters access premium gear without the upfront ownership cost.
+
+The platform is inspired by the density, professionalism, and trustworthiness of industry leaders like **Amazon**, **Flipkart**, and **Airbnb**, but specialized for the rental economy across physical goods.
+
+---
+
+## 2. Objectives
+
+| # | Objective | Priority |
+|---|-----------|----------|
+| 1 | Provide a trusted, frictionless platform for renters to discover and book premium equipment | High |
+| 2 | Enable verified merchants to list, manage, and monetize their assets | High |
+| 3 | Implement secure payment collection including refundable security deposits | High |
+| 4 | Deliver a premium, Amazon-level UI with category navigation, search, and filtering | High |
+| 5 | Support real-time messaging between renters and owners | Medium |
+| 6 | Provide an admin dashboard for monitoring listings, disputes, and users | Medium |
+| 7 | Enforce identity verification and product condition auditing | Medium |
+
+---
+
+## 3. Target Users
+
+- **Renters**: Students, creators, professionals, and hobbyists who need premium gear for short durations (1–30 days)
+- **Merchants / Owners**: Individuals or small businesses who own high-value equipment and want to earn passive income from it
+- **Admins**: Platform operators managing disputes, verifying users, and monitoring activity
+
+---
+
+## 4. Proposed Approach
+
+### 4.1 Technology Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | HTML5 + CSS3 (Custom Design System) + Vanilla JS (ES Modules) |
+| **Backend** | Node.js + Express.js (REST API) |
+| **Database** | Firebase Firestore (NoSQL, real-time capable) |
+| **Auth** | Firebase Authentication (Email/Password + Google OAuth) |
+| **Payments** | Razorpay (order creation + server-side verification) |
+| **File Storage** | Firebase Storage (product images) |
+| **Hosting** | Express static serving (localhost:5000); deployable to Railway/Render |
+
+### 4.2 Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│                     Browser (Client)                  │
+│  HTML/CSS/JS ──► Firebase Auth (JWT)  ──► API Calls  │
+└────────────────────────────┬─────────────────────────┘
+                             │ HTTP / JSON
+┌────────────────────────────▼─────────────────────────┐
+│              Express.js Backend (server.js)            │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │
+│  │  /auth   │ │/products │ │/bookings │ │payments │ │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬────┘ │
+│       │            │            │             │       │
+└───────┼────────────┼────────────┼─────────────┼───────┘
+        │            │            │             │
+┌───────▼────────────▼────────────▼─────────────▼───────┐
+│              Firebase Firestore (Cloud DB)              │
+│   collections: users | products | bookings | chats     │
+└────────────────────────────────────────────────────────┘
+```
+
+### 4.3 Core Features (Phase 1 — MVP)
+
+1. **User Authentication** — Sign up / Sign in (email + Google), Firebase JWT for all protected API calls
+2. **Product Catalog** — Browse 39+ real listings with images, ratings, condition tags, and categories
+3. **Search & Filter** — Search by keyword, filter by category, condition, sort by price/rating
+4. **Product Detail** — Full description, specs, merchant info, availability calendar, reviews
+5. **Booking Flow** — Select rental dates → calculate total cost + deposit → Razorpay checkout
+6. **Merchant Dashboard** — Add/edit/remove listings, view active bookings and earnings
+7. **Messaging** — In-platform chat between renter and owner before/after booking
+8. **Admin Panel** — View all users, products, and bookings; manage disputes
+
+### 4.4 Data Model
+
+```
+users:        { uid, email, name, role: renter|merchant|admin, verified, createdAt }
+products:     { merchant(uid), title, description, category, pricePerDay, securityDeposit,
+                condition, images[], rating, reviewCount, specs{}, status, createdAt }
+bookings:     { renter, product, startDate, endDate, totalDays, totalCost, deposit,
+                status: PENDING|CONFIRMED|ACTIVE|RETURNED|CANCELLED, createdAt }
+reviews:      { product, reviewer, rating, comment, createdAt }
+chats:        { participants[], messages[{ sender, text, timestamp }] }
+payments:     { booking, razorpayOrderId, razorpayPaymentId, amount, status, createdAt }
+```
+
+### 4.5 UI Design System
+
+- **Dual Theme**: Light mode (clean white + blue) and Dark mode (deep navy), switchable live
+- **Glassmorphism**: Frosted-glass sticky navigation with `backdrop-filter: blur()`
+- **Typography**: `Plus Jakarta Sans` — weights 400 / 600 / 800
+- **Gradients**: Primary `#2563eb → #7c3aed`, Accent `#f59e0b → #d97706`
+- **Motion**: Staggered slide-in animations for menus, hover lift on cards
+
+---
+
+## 5. Unique Value Propositions
+
+| Feature | LendeX | Typical Classified Sites |
+|---|---|---|
+| Security deposit management | ✅ Automated via Razorpay | ❌ Manual / cash |
+| Verified merchant badges | ✅ Admin-approved | ❌ None |
+| In-platform messaging | ✅ Real-time capable | ❌ External WhatsApp |
+| Dynamic pricing (per day) | ✅ Customizable | ❌ Fixed price / negotiation |
+| Professional UI | ✅ Amazon-grade | ❌ Generic listings |
+| Rental status tracking | ✅ PENDING → RETURNED flow | ❌ None |
+
+---
+
+## 6. Known Risks & Mitigations
+
+| Risk | Mitigation |
+|---|---|
+| Fake listings / fraud | Admin verification layer + security deposit system |
+| Item damage disputes | Pre/post rental condition photos stored in Firebase Storage |
+| Payment failures | Razorpay webhook-based verification — order confirmed only after payment |
+| Firestore lacks full-text search | In-memory title/description filter implemented on backend |
+
+---
+
+## 7. How to Run (Development)
+
+```bash
+# 1. Clone the repo and install dependencies
+cd rental-marketplace/backend
+npm install
+
+# 2. Configure environment variables
+# Edit backend/.env with Firebase and Razorpay credentials
+
+# 3. Start the server
+npm run dev
+# → Server runs on http://localhost:5000
+
+# 4. Seed the database (run once)
+node seed.js
+# → Seeds 39 premium product listings
+
+# 5. Visit the app
+# Open http://localhost:5000 in your browser
+```
+
+---
+
+## 8. Future Roadmap
+
+- [ ] Real-time notifications (Firestore listeners)
+- [ ] Image upload for listings (Firebase Storage integration)
+- [ ] Calendar-based availability blocking
+- [ ] Mobile app (React Native)
+- [ ] Ratings & reviews system (post-return)
+- [ ] Merchant KYC / Aadhaar verification
+- [ ] Multi-currency support
+
+---
+
+*Document prepared: March 2026 | Version 1.0*
+*Project: LendeX Technologies — Full Stack Development*

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | LendeX</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+    <nav>
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+            <a href="index.html" class="logo">Lende<span>X</span></a>
+            <div id="nav-links" class="nav-links">
+                <a href="index.html">Explore</a>
+                <a href="login.html" class="btn btn-primary" style="color: white;">Sign In</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="loader" class="text-center" style="padding: 10rem;">
+            <p style="font-size: 1.25rem; font-weight: 600; color: var(--text-muted);">Opening LendeX Premium Listing...
+            </p>
+        </div>
+
+        <div id="product-content" class="hidden">
+            <div class="product-grid-detail">
+                <!-- Left: Visuals and Data -->
+                <div class="product-main">
+                    <div id="image-gallery" class="gallery-container">
+                        <img id="main-image" src="" alt="Product Image">
+                        <div id="p-verified" class="verified-badge"
+                            style="top: 2rem; right: 2rem; padding: 0.75rem; font-size: 1.5rem;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2.5rem;">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                            <span id="p-category" class="badge badge-blue"></span>
+                            <span id="p-condition" class="badge badge-green"></span>
+                            <div class="stars" style="font-size: 0.9rem; margin-bottom: 0;">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span id="p-rating-text"
+                                    style="color: var(--text-muted); font-weight: 600; margin-left: 0.5rem;"></span>
+                            </div>
+                        </div>
+
+                        <h1 id="p-title"
+                            style="font-size: 2.25rem; font-weight: 850; letter-spacing: -0.03em; margin-bottom: 1.5rem; line-height: 1.2; color: var(--text-main);">
+                        </h1>
+
+                        <!-- Specifications Section -->
+                        <div
+                            style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 2.5rem; box-shadow: var(--shadow-sm);">
+                            <h3
+                                style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em;">
+                                <i class="fas fa-list-ul" style="color: var(--primary);"></i> Technical Details
+                            </h3>
+                            <table class="specs-table" id="specs-body">
+                                <!-- Populated by JS -->
+                            </table>
+                        </div>
+
+                        <!-- Description Section -->
+                        <div style="margin-bottom: 4rem;">
+                            <h3
+                                style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-main);">
+                                Product Experience</h3>
+                            <p id="p-desc" style="color: var(--text-muted); line-height: 1.8; font-size: 1.05rem;"></p>
+                        </div>
+
+                        <!-- Protection Banner -->
+                        <div
+                            style="display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: var(--bg-page); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 3rem;">
+                            <div
+                                style="width: 48px; height: 48px; min-width: 48px; background: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); font-size: 1.25rem; color: var(--primary);">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 800; color: var(--text-main); font-size: 1rem;">LendeX Verified
+                                    Protection</p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Fully insured coverage up to
+                                    ₹5,00,000 for every rental transaction.</p>
+                            </div>
+                        </div>
+
+                        <!-- Reviews Section -->
+                        <div style="margin-top: 5rem;">
+                            <h3
+                                style="font-size: 1.5rem; font-weight: 800; margin-bottom: 2rem; border-bottom: 2px solid var(--border-soft); padding-bottom: 1rem;">
+                                Customer Reviews</h3>
+                            <div id="reviews-list">
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="user-info">
+                                            <div class="user-avatar">JD</div>
+                                            <div>
+                                                <p style="font-weight: 700;">John Doe</p>
+                                                <p style="font-size: 0.8rem; color: var(--text-muted);">Verified Renter
+                                                    • 2 weeks ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="stars" style="font-size: 0.8rem;">
+                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                                class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6;">Absolutely
+                                        incredible experience. The gear was in pristine condition and the merchant was
+                                        extremely professional. Highly recommended.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-sidebar">
+                    <div class="checkout-sidebar">
+                        <div class="checkout-header">
+                            <span class="checkout-label">Rental Rate</span>
+                            <div style="display: flex; align-items: baseline; gap: 0.4rem;">
+                                <h2 class="checkout-price">₹<span id="p-price">0</span></h2>
+                                <span style="color: var(--text-muted); font-weight: 600; font-size: 0.95rem;">/
+                                    day</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <span class="checkout-label">Security Deposit</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">₹<span
+                                    id="p-deposit">0</span>
+                                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">(Fully
+                                    Refundable)</span>
+                            </h3>
+                        </div>
+
+                        <div id="error-box" class="error-msg hidden"></div>
+
+                        <div class="booking-form">
+                            <div class="booking-input-wrap">
+                                <label>Pickup Date</label>
+                                <input type="date" id="start-date" class="btn btn-outline"
+                                    style="width: 100%; padding: 0.6rem; font-size: 0.85rem;">
+                            </div>
+                            <div class="booking-input-wrap">
+                                <label>Return Date</label>
+                                <input type="date" id="end-date" class="btn btn-outline"
+                                    style="width: 100%; padding: 0.6rem; font-size: 0.85rem;">
+                            </div>
+                        </div>
+
+                        <div id="total-calc" class="hidden calc-box">
+                            <div class="calc-row">
+                                <span>Rental Subtotal</span>
+                                <span id="rental-subtotal" style="color: var(--text-main); font-weight: 700;">₹0</span>
+                            </div>
+                            <div class="calc-row">
+                                <span>Security Deposit</span>
+                                <span style="color: var(--text-main); font-weight: 700;">₹<span
+                                        id="p-deposit-calc">0</span></span>
+                            </div>
+                            <div class="calc-total">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Total Payable</span>
+                                    <span id="total-amount-display"
+                                        style="font-size: 1.75rem; color: var(--primary); letter-spacing: -0.05em;">₹0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="book-btn" class="btn btn-primary"
+                            style="width: 100%; padding: 1rem; font-weight: 800; font-size: 1rem; box-shadow: var(--shadow-md);">
+                            <i class="fas fa-bolt"></i> Reserve Now
+                        </button>
+
+                        <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-soft); padding-top: 1.5rem;">
+                            <div
+                                style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem;">
+                                <i class="fas fa-check-circle" style="color: #10b981;"></i> Merchant Verified & Insured
+                            </div>
+                            <div
+                                style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+                                <i class="fas fa-history" style="color: #10b981;"></i> 24/7 Professional Support
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Items Section -->
+            <section class="related-section">
+                <h3 class="section-title">Similar Items</h3>
+                <div id="related-grid" class="related-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('id');
+        let currentProduct = null;
+        let totalRental = 0;
+
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const totalCalc = document.getElementById('total-calc');
+        const bookBtn = document.getElementById('book-btn');
+        const errorBox = document.getElementById('error-box');
+
+        const updateCalc = () => {
+            const start = new Date(startDateInput.value);
+            const end = new Date(endDateInput.value);
+            if (start && end && currentProduct && start <= end) {
+                const diffTime = Math.abs(end - start);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+                totalRental = diffDays * currentProduct.pricePerDay;
+
+                document.getElementById('rental-subtotal').innerText = `₹${totalRental}`;
+                document.getElementById('total-amount-display').innerText = `₹${totalRental + currentProduct.securityDeposit}`;
+                totalCalc.classList.remove('hidden');
+                bookBtn.innerHTML = `<i class="fas fa-bolt"></i> Book Now & Pay`;
+            } else {
+                totalCalc.classList.add('hidden');
+                bookBtn.innerHTML = `<i class="fas fa-bolt"></i> Reserve Now`;
+            }
+        };
+
+        startDateInput.onchange = updateCalc;
+        endDateInput.onchange = updateCalc;
+
+        window.addEventListener("authStateReady", async () => {
+            if (!productId) {
+                document.body.innerHTML = "<div class='container text-center' style='margin-top: 5rem;'><h1>Product Not Found</h1><a href='index.html'>Go back</a></div>";
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/products/${productId}`);
+                const { data } = await res.json();
+                currentProduct = data;
+
+                document.getElementById('p-title').innerText = currentProduct.title;
+                document.getElementById('p-desc').innerText = currentProduct.description;
+                document.getElementById('p-category').innerText = currentProduct.category;
+                document.getElementById('p-condition').innerText = currentProduct.condition + " Condition";
+                document.getElementById('p-price').innerText = currentProduct.pricePerDay;
+                document.getElementById('p-rating-text').innerText = `(${currentProduct.rating || '4.5'}) • ${currentProduct.reviewCount || '24'} reviews`;
+
+                const deposit = currentProduct.securityDeposit;
+                document.getElementById('p-deposit').innerText = deposit;
+                document.getElementById('p-deposit-calc').innerText = deposit;
+                document.getElementById('main-image').src = currentProduct.images[0];
+
+                // Dynamic Specs
+                const specs = {
+                    'Electronics': [
+                        ['Performance', 'High-Speed Processing'],
+                        ['Connectivity', 'Wi-Fi 6E, Bluetooth 5.3'],
+                        ['Resolution', '4K / 60FPS Support'],
+                        ['Battery Life', 'Up to 12 Hours'],
+                        ['Warranty', 'Active Protection Enabled']
+                    ],
+                    'Tools': [
+                        ['Power Source', 'Cordless Lithium-Ion'],
+                        ['Safety', 'Auto-Stop Technology'],
+                        ['Durability', 'All-Metal Construction'],
+                        ['Weight', 'Lightweight Ergonomic'],
+                        ['Standard', 'ANSI Certified']
+                    ],
+                    'Automotive': [
+                        ['Fuel Type', 'Full Electric / High Octane'],
+                        ['Transmission', 'Automatic P-DCT'],
+                        ['Safety', '5-Star Rating'],
+                        ['Feature', 'Premium Sound System'],
+                        ['Includes', 'Standard Insurance']
+                    ]
+                };
+
+                const activeSpecs = specs[currentProduct.category] || specs['Electronics'];
+                document.getElementById('specs-body').innerHTML = activeSpecs.map(s => `
+                    <tr>
+                        <td class="spec-label">${s[0]}</td>
+                        <td class="spec-value">${s[1]}</td>
+                    </tr>
+                `).join('');
+
+                // Fetch Related Items
+                const relRes = await fetch(`/api/products?category=${currentProduct.category}`);
+                const relData = await relRes.json();
+                const filteredRel = relData.data.filter(i => i._id !== productId).slice(0, 4);
+
+                document.getElementById('related-grid').innerHTML = filteredRel.map(i => `
+                    <div class="card" onclick="window.location.href='product.html?id=${i._id}'">
+                         <div class="card-img-wrap" style="height: 180px;">
+                            <img src="${i.images[0]}" class="card-img" alt="${i.title}">
+                        </div>
+                        <div class="card-body" style="padding: 1.25rem;">
+                            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; font-weight: 700;">${i.title}</h4>
+                            <p class="card-price" style="font-size: 1.15rem; font-weight: 850;">₹${i.pricePerDay}<span style="font-size: 0.8rem; font-weight: 500;">/day</span></p>
+                        </div>
+                    </div>
+                `).join('');
+
+                const today = new Date().toISOString().split('T')[0];
+                startDateInput.min = today;
+                endDateInput.min = today;
+
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('product-content').classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        bookBtn.onclick = async () => {
+            if (!window.currentUser) {
+                window.location.href = "login.html";
+                return;
+            }
+            if (!startDateInput.value || !endDateInput.value) {
+                errorBox.innerText = "Please select your rental dates first.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                bookBtn.innerText = "Processing...";
+                bookBtn.disabled = true;
+
+                // 1. Create Booking
+                const bRes = await fetch(`${window.API_URL}/bookings`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${window.authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: currentProduct._id,
+                        startDate: startDateInput.value,
+                        endDate: endDateInput.value
+                    })
+                });
+                const bData = await bRes.json();
+                if (!bData.success) throw new Error(bData.error);
+                const booking = bData.data;
+
+                // 2. Create Order
+                const oRes = await fetch(`${window.API_URL}/payments/create-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${window.authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bookingId: booking._id })
+                });
+                const oData = await oRes.json();
+                const order = oData.data;
+
+                // 3. Razorpay
+                const options = {
+                    key: "rzp_test_dummy",
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "LendeX Marketplace",
+                    description: `Rent: ${currentProduct.title}`,
+                    order_id: order.id,
+                    handler: async function (res) {
+                        await fetch(`${window.API_URL}/payments/verify`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${window.authToken}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                razorpay_order_id: res.razorpay_order_id,
+                                razorpay_payment_id: res.razorpay_payment_id,
+                                razorpay_signature: res.razorpay_signature,
+                                bookingId: booking._id
+                            })
+                        });
+                        alert("Great! Your booking is confirmed.");
+                        window.location.href = "profile.html";
+                    },
+                    prefill: { email: window.currentUser.email },
+                    theme: { color: "#2563eb" }
+                };
+                const rzp = new window.Razorpay(options);
+                rzp.open();
+            } catch (err) {
+                errorBox.innerText = err.message || "Failed to initiate booking.";
+                errorBox.classList.remove('hidden');
+            } finally {
+                bookBtn.innerHTML = `<i class="fas fa-bolt"></i> Book Now & Pay`;
+                bookBtn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>
