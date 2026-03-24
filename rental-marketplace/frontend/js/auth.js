@@ -49,6 +49,20 @@ onAuthStateChanged(auth, async (user) => {
                 }
             });
             const data = await res.json();
+            
+            if (!res.ok || !data.data) {
+                console.error("Backend Sync Failed:", data.error || 'Unknown error');
+                await signOut(auth);
+                // Reset navbar to default
+                if (navLinks) {
+                    navLinks.innerHTML = `
+                        <a href="index.html">Explore</a>
+                        <a href="login.html" class="btn btn-primary" style="color: white;">Login / Sign Up</a>
+                    `;
+                }
+                return;
+            }
+
             window.dbUser = data.data;
 
             // Update Navbar
